@@ -124,10 +124,6 @@ export const checkWin = (activeRowIdx, allRows, solution) => {
     let fullInput = "";
 
     for (let i = 0; i < activeRowValues.length; ++i) {
-        if (activeRowValues[i] === "") {
-            setError("");
-            return allRows;
-        }
         fullInput += activeRowValues[i];
     }
     return fullInput === solution.toLowerCase();

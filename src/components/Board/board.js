@@ -39,6 +39,7 @@ const Row = ({ values, colors, idx }) => {
 const Board = ({ solution, handleReplay }) => {
     const [loading, setLoading] = useState(false);
     const [gameOver, setGameOver] = useState(false);
+    const [hasWon, setHasWon] = useState(false);
     const [activeRowIdx, setActiveRowIdx] = useState(0);
     const [rows, setRows] = useState(_.cloneDeep(BLANK_ROWS));
     const [keyColors, setKeyColors] = useState({});
@@ -64,6 +65,7 @@ const Board = ({ solution, handleReplay }) => {
     const handlePlayAgain = () => {
         setLoading(false);
         setGameOver(false);
+        setHasWon(false);
         setActiveRowIdx(0);
         setRows(_.cloneDeep(BLANK_ROWS));
         setKeyColors({});
@@ -75,8 +77,11 @@ const Board = ({ solution, handleReplay }) => {
     useEffect(() => {
         if (activeRowIdx >= rows.length) {
             setGameOver(true);
+            setHasWon(checkWin(activeRowIdx, rows, solution));
         } else if (activeRowIdx > 0) {
-            setGameOver(checkWin(activeRowIdx, rows, solution));
+            const winner = checkWin(activeRowIdx, rows, solution);
+            setGameOver(winner);
+            setHasWon(winner);
         }
     }, [activeRowIdx]);
 
@@ -119,7 +124,7 @@ const Board = ({ solution, handleReplay }) => {
             {gameOver ? (
                 <span className={styles.gameOverMessage}>
                     {`${
-                        activeRowIdx >= rows.length ? "You Lose." : "You Win!"
+                        hasWon ? "You Win!" : "You Lose."
                     } The word was ${solution}.`}
                 </span>
             ) : (
