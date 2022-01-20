@@ -1,0 +1,23 @@
+.container {
+    min-height: 100vh;
+    padding: 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.gameContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+}
+
+.gameHeader {
+    display: flex;
+    align-content: flex-start;
+    margin: 15px 0;
+    font-size: 36px;
+}

@@ -1,0 +1,50 @@
+$regularSize: 60px;
+$smallSize: 30px;
+
+.square {
+    height: $regularSize;
+    width: $regularSize;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    margin-right: 5px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 500;
+    font-size: 50px;
+    text-transform: uppercase;
+}
+
+.square:last-child {
+    margin-right: 0;
+}
+
+.smallSquare {
+    height: $smallSize;
+    width: $smallSize;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    margin-right: 5px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    font-weight: 400;
+    font-size: 20px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.smallSquare:last-child {
+    margin-right: 0;
+}
