@@ -4,27 +4,23 @@ import _ from "lodash";
 
 // components
 import Square from "../Square/square";
+import Keyboard from "../Keyboard/keyboard";
 
 // helpers
 import { checkWin, handleInput } from "../../helpers/boardHelper";
 import { COLORS } from "../../types/colors";
 
+// redux
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import {
+    selectNumGuesses,
+    selectWordLength,
+} from "../../redux/options/optionsSelector";
+import { selectSolution } from "../../redux/game/gameSelector";
+
 // styling
 import styles from "./board.module.scss";
-import Keyboard from "../Keyboard/keyboard";
-
-const BLANK_ROWS = Array(6)
-    .fill()
-    .map((_) => ({
-        values: ["", "", "", "", ""],
-        colors: [
-            COLORS.BLANK,
-            COLORS.BLANK,
-            COLORS.BLANK,
-            COLORS.BLANK,
-            COLORS.BLANK,
-        ],
-    }));
 
 const Row = ({ values, colors, idx }) => {
     return (
@@ -36,12 +32,29 @@ const Row = ({ values, colors, idx }) => {
     );
 };
 
-const Board = ({ solution, handleReplay }) => {
+const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
+    // empty grid
+    const generateBlankGrid = () => {
+        let values = [];
+        let colors = [];
+        for (let i = 0; i < wordLength; ++i) {
+            values.push("");
+            colors.push(COLORS.BLANK);
+        }
+
+        let grid = [];
+        for (let i = 0; i < numGuesses; ++i) {
+            grid.push({ values: [...values], colors: [...colors] });
+        }
+
+        return grid;
+    };
+
     const [loading, setLoading] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [hasWon, setHasWon] = useState(false);
     const [activeRowIdx, setActiveRowIdx] = useState(0);
-    const [rows, setRows] = useState(_.cloneDeep(BLANK_ROWS));
+    const [rows, setRows] = useState(generateBlankGrid());
     const [keyColors, setKeyColors] = useState({});
     const [error, setError] = useState("");
 
@@ -67,7 +80,7 @@ const Board = ({ solution, handleReplay }) => {
         setGameOver(false);
         setHasWon(false);
         setActiveRowIdx(0);
-        setRows(_.cloneDeep(BLANK_ROWS));
+        setRows(generateBlankGrid());
         setKeyColors({});
         setError("");
         handleReplay();
@@ -84,6 +97,10 @@ const Board = ({ solution, handleReplay }) => {
             setHasWon(winner);
         }
     }, [activeRowIdx]);
+
+    useEffect(() => {
+        setRows(generateBlankGrid());
+    }, [wordLength]);
 
     useEventListener("keydown", keyHandler);
 
@@ -136,4 +153,10 @@ const Board = ({ solution, handleReplay }) => {
     );
 };
 
-export default Board;
+const mapState = createStructuredSelector({
+    wordLength: selectWordLength,
+    numGuesses: selectNumGuesses,
+    solution: selectSolution
+});
+
+export default connect(mapState, null)(Board);
