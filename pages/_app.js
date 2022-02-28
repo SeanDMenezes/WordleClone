@@ -11,7 +11,7 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }) {
     useEffect(() => {
         const { pathname } = Router;
-        if (pathname != "/") {
+        if (pathname != "/" && pathname != "/challenge") {
             Router.push("/");
         }
     });

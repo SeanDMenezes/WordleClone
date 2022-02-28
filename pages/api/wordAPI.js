@@ -9,11 +9,7 @@ export const getWordsOfLength = async (wordLength) => {
 };
 
 export const getRandomWordofLength = async (wordLength) => {
-    const res = await get(
-        `api/wordleclone/getrandomwordoflength/${wordLength}`
-    );
-    console.log(res)
-    return res;
+    return await get(`api/wordleclone/getrandomwordoflength/${wordLength}`);
 };
 
 export const isValidWord = async (word) => {

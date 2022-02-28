@@ -28,6 +28,7 @@
     "sass": "^1.43.3"
   },
   "devDependencies": {
+    "@welldone-software/why-did-you-render": "^6.2.3",
     "eslint": "8.1.0",
     "eslint-config-next": "11.1.2"
   }

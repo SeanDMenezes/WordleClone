@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 // components
 import Board from "../Board/board";
+import ChallengeBoard from "../ChallengeBoard/challengeBoard";
 import GameHeader from "./GameHeader/GameHeader";
 
 // redux
@@ -13,12 +14,8 @@ import { selectSolution } from "../../redux/game/gameSelector";
 // styling
 import styles from "./game.module.scss";
 
-const Game = ({ solution, setNewSolution }) => {
+const Game = ({ solution, setNewSolution, challengeID }) => {
     const getRandomWord = async () => {
-        await setNewSolution();
-    };
-
-    const handleReplay = async () => {
         await setNewSolution();
     };
 
@@ -28,10 +25,17 @@ const Game = ({ solution, setNewSolution }) => {
 
     return (
         <div className={styles.container}>
+            <head>
+                <title> Wordle Clone </title>
+            </head>
             {solution ? (
                 <div className={styles.gameContainer}>
                     <GameHeader />
-                    <Board handleReplay={handleReplay} />
+                    {challengeID ? (
+                        <ChallengeBoard handleReplay={getRandomWord} />
+                    ) : (
+                        <Board handleReplay={getRandomWord} />
+                    )}
                 </div>
             ) : (
                 <div>Generating word...</div>
@@ -41,11 +45,11 @@ const Game = ({ solution, setNewSolution }) => {
 };
 
 const mapState = createStructuredSelector({
-    solution: selectSolution
+    solution: selectSolution,
 });
 
-const mapDispatch = dispatch => ({
-    setNewSolution: () => dispatch(setNewSolution())
+const mapDispatch = (dispatch) => ({
+    setNewSolution: () => dispatch(setNewSolution()),
 });
 
 export default connect(mapState, mapDispatch)(Game);

@@ -7,17 +7,36 @@ import Square from "../Square/square";
 import Keyboard from "../Keyboard/keyboard";
 
 // helpers
-import { checkWin, handleInput } from "../../helpers/boardHelper";
-import { COLORS } from "../../types/colors";
+import {
+    checkWin,
+    generateBlankGrid,
+    handleInput,
+} from "../../helpers/boardHelper";
 
 // redux
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import {
+    selectIsTimeTrial,
     selectNumGuesses,
     selectWordLength,
 } from "../../redux/options/optionsSelector";
-import { selectSolution } from "../../redux/game/gameSelector";
+import {
+    selectActiveRow,
+    selectKeyColors,
+    selectRows,
+    selectSolution,
+    selectTimer,
+} from "../../redux/game/gameSelector";
+import {
+    incrementTimer,
+    pauseTimer,
+    resetTimer,
+    resumeTimer,
+    setActiveRow,
+    setKeyColors,
+    setRows,
+} from "../../redux/game/gameActions";
 
 // styling
 import styles from "./board.module.scss";
@@ -32,30 +51,20 @@ const Row = ({ values, colors, idx }) => {
     );
 };
 
-const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
-    // empty grid
-    const generateBlankGrid = () => {
-        let values = [];
-        let colors = [];
-        for (let i = 0; i < wordLength; ++i) {
-            values.push("");
-            colors.push(COLORS.BLANK);
-        }
-
-        let grid = [];
-        for (let i = 0; i < numGuesses; ++i) {
-            grid.push({ values: [...values], colors: [...colors] });
-        }
-
-        return grid;
-    };
-
+const Board = ({
+    solution,
+    rows, setRows,
+    keyColors, setKeyColors,
+    activeRowIdx, setActiveRowIdx,
+    isTimeTrial,
+    timer, incrementTimer, pauseTimer, resumeTimer, resetTimer,
+    handleReplay,
+    wordLength,
+    numGuesses,
+}) => {
     const [loading, setLoading] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [hasWon, setHasWon] = useState(false);
-    const [activeRowIdx, setActiveRowIdx] = useState(0);
-    const [rows, setRows] = useState(generateBlankGrid());
-    const [keyColors, setKeyColors] = useState({});
     const [error, setError] = useState("");
 
     const keyHandler = async ({ key }) => {
@@ -80,11 +89,17 @@ const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
         setGameOver(false);
         setHasWon(false);
         setActiveRowIdx(0);
-        setRows(generateBlankGrid());
+        setRows(generateBlankGrid(wordLength, numGuesses));
         setKeyColors({});
         setError("");
+        resumeTimer();
+        resetTimer();
         handleReplay();
     };
+
+    useEffect(() => {
+        if (gameOver) pauseTimer();
+    }, [gameOver]);
 
     // checks if game is over or not
     useEffect(() => {
@@ -99,13 +114,21 @@ const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
     }, [activeRowIdx]);
 
     useEffect(() => {
-        setRows(generateBlankGrid());
+        setRows(generateBlankGrid(wordLength, numGuesses));
     }, [wordLength]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            const newTime = parseFloat(timer) + 0.1;
+            incrementTimer(parseFloat(newTime).toFixed(1));
+        }, 100);
+    });
 
     useEventListener("keydown", keyHandler);
 
     return (
         <div className={styles.boardContainer}>
+            {isTimeTrial && !gameOver ? <span>{timer}</span> : <> </>}
             {loading ? (
                 <span className={styles.loadingMessage}>
                     {" "}
@@ -121,7 +144,7 @@ const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
             ) : (
                 <></>
             )}
-            {error !== "" && !loading ? (
+            {error !== "" && !loading && !gameOver ? (
                 <div className={styles.errorMessage}> {error} </div>
             ) : (
                 <></>
@@ -142,7 +165,8 @@ const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
                 <span className={styles.gameOverMessage}>
                     {`${
                         hasWon ? "You Win!" : "You Lose."
-                    } The word was ${solution}.`}
+                    } The word was ${solution}.\n`}
+                    {isTimeTrial ? `Time taken: ${timer}` : ""}
                 </span>
             ) : (
                 <></>
@@ -156,7 +180,22 @@ const Board = ({ solution, handleReplay, wordLength, numGuesses }) => {
 const mapState = createStructuredSelector({
     wordLength: selectWordLength,
     numGuesses: selectNumGuesses,
-    solution: selectSolution
+    solution: selectSolution,
+    isTimeTrial: selectIsTimeTrial,
+    timer: selectTimer,
+    rows: selectRows,
+    keyColors: selectKeyColors,
+    activeRowIdx: selectActiveRow,
 });
 
-export default connect(mapState, null)(Board);
+const mapDispatch = (dispatch) => ({
+    incrementTimer: (stepAmount) => dispatch(incrementTimer(stepAmount)),
+    pauseTimer: () => dispatch(pauseTimer()),
+    resumeTimer: () => dispatch(resumeTimer()),
+    resetTimer: () => dispatch(resetTimer()),
+    setRows: (rows) => dispatch(setRows(rows)),
+    setKeyColors: (keyColors) => dispatch(setKeyColors(keyColors)),
+    setActiveRowIdx: (activeRow) => dispatch(setActiveRow(activeRow)),
+});
+
+export default connect(mapState, mapDispatch)(Board);

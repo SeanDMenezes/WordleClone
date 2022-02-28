@@ -1,5 +1,10 @@
 import { getRandomWordofLength } from "../../../pages/api/wordAPI";
-import { setSolution } from "../game/gameActions";
+import {
+    pauseTimer,
+    resetTimer,
+    resumeTimer,
+    setSolution,
+} from "../game/gameActions";
 import { OPTION_ACTION_TYPES } from "./optionsTypes";
 
 export const setWordLength = (wordLength) => ({
@@ -25,4 +30,26 @@ export const setNumGuesses = (numGuesses) => ({
 export const setHardMode = (isHardMode) => ({
     type: OPTION_ACTION_TYPES.SET_HARD_MODE,
     payload: isHardMode,
+});
+
+export const updateTimeTrial = (isTimeTrial) => ({
+    type: OPTION_ACTION_TYPES.SET_TIME_TRIAL,
+    payload: isTimeTrial,
+});
+
+export const setTimeTrial = (isTimeTrial) => {
+    return (dispatch) => {
+        if (isTimeTrial) {
+            dispatch(resumeTimer());
+        } else {
+            dispatch(pauseTimer());
+        }
+        dispatch(resetTimer());
+        dispatch(updateTimeTrial(isTimeTrial));
+    };
+};
+
+export const setTimeNumWords = (numWords) => ({
+    type: OPTION_ACTION_TYPES.SET_TIME_NUM_WORDS,
+    payload: numWords,
 });

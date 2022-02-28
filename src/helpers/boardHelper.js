@@ -3,6 +3,23 @@ import { COLORS } from "../types/colors";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
+// generates empty grid
+export const generateBlankGrid = (wordLength, numGuesses) => {
+    let values = [];
+    let colors = [];
+    for (let i = 0; i < wordLength; ++i) {
+        values.push("");
+        colors.push(COLORS.BLANK);
+    }
+
+    let grid = [];
+    for (let i = 0; i < numGuesses; ++i) {
+        grid.push({ values: [...values], colors: [...colors] });
+    }
+
+    return grid;
+};
+
 export const handleInput = async (
     keyPressed,
     activeRowIdx,
