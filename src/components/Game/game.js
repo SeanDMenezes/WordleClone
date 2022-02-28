@@ -25,9 +25,7 @@ const Game = ({ solution, setNewSolution, challengeID }) => {
 
     return (
         <div className={styles.container}>
-            <head>
-                <title> Wordle Clone </title>
-            </head>
+            <title> Wordle Clone </title>
             {solution ? (
                 <div className={styles.gameContainer}>
                     <GameHeader />
