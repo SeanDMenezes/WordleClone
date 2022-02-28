@@ -1,15 +1,25 @@
 import Router from "next/router";
 import { useEffect } from "react";
+
+// redux
+import { Provider } from "react-redux";
+import { store } from "./../src/redux/store";
+
+// styling
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
     useEffect(() => {
         const { pathname } = Router;
-        if (pathname != "/") {
+        if (pathname != "/" && pathname != "/challenge") {
             Router.push("/");
         }
     });
-    return <Component {...pageProps} />;
+    return (
+        <Provider store={store}>
+            <Component {...pageProps} />
+        </Provider>
+    );
 }
 
 export default MyApp;

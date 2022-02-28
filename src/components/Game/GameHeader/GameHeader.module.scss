@@ -1,0 +1,42 @@
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    padding: 0 10px;
+    flex-wrap: nowrap;
+}
+
+.gameHeader {
+    display: flex;
+    text-align: center;
+    margin: 15px 0;
+    margin-right: -30px;
+    font-size: 36px;
+}
+
+.leftMenu {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;
+    justify-self: flex-start;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+.rightMenu {
+    display: flex;
+    margin-left: auto;
+    cursor: pointer;
+
+    .gameLeaderboard {
+        margin-right: 5px;
+    }
+
+    .gameOptions {
+        margin-left: 5px;
+    }
+}

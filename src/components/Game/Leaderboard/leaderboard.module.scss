@@ -1,0 +1,38 @@
+.leaderboardContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.leaderboardModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    width: 50%;
+    min-width: 300px;
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px 40px;
+    top: 50%;
+
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px 2px grey;
+}
+
+.leaderboardHeader {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.leaderboardRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}

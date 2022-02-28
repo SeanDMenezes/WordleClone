@@ -1,32 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { getRandomWordofLength } from "../../../pages/api/wordAPI";
-import Board from "../Board/board";
+import React, { useEffect } from "react";
 
+// components
+import Board from "../Board/board";
+import ChallengeBoard from "../ChallengeBoard/challengeBoard";
+import GameHeader from "./GameHeader/GameHeader";
+
+// redux
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { setNewSolution } from "../../redux/game/gameActions";
+import { selectSolution } from "../../redux/game/gameSelector";
+
+// styling
 import styles from "./game.module.scss";
 
-const Game = () => {
-    const [solution, setSolution] = useState(null);
-
-    const getRandomFiveLetterWord = async () => {
-        const response = await getRandomWordofLength(5);
-        setSolution(response);
-    };
-
-    const handleReplay = async () => {
-        setSolution(null);
+const Game = ({ solution, setNewSolution, challengeID }) => {
+    const getRandomWord = async () => {
+        await setNewSolution();
     };
 
     useEffect(() => {
-        if (!solution) getRandomFiveLetterWord();
+        if (!solution) getRandomWord();
     }, [solution]);
 
     return (
         <div className={styles.container}>
+            <title> Wordle Clone </title>
             {solution ? (
                 <div className={styles.gameContainer}>
-                    <div className={styles.gameHeader}>Wordle Clone</div>
-
-                    <Board solution={solution} handleReplay={handleReplay} />
+                    <GameHeader />
+                    {challengeID ? (
+                        <ChallengeBoard handleReplay={getRandomWord} />
+                    ) : (
+                        <Board handleReplay={getRandomWord} />
+                    )}
                 </div>
             ) : (
                 <div>Generating word...</div>
@@ -35,4 +42,12 @@ const Game = () => {
     );
 };
 
-export default Game;
+const mapState = createStructuredSelector({
+    solution: selectSolution,
+});
+
+const mapDispatch = (dispatch) => ({
+    setNewSolution: () => dispatch(setNewSolution()),
+});
+
+export default connect(mapState, mapDispatch)(Game);
